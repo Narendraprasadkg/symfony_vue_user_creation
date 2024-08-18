@@ -1,0 +1,23 @@
+user_login:
+  path: /
+  controller: 'App\Controller\UserController::index'
+
+user_list:
+  path: /list
+  controller: 'App\Controller\UserController::list'
+
+user_add:
+  path: /add
+  controller: 'App\Controller\UserController::addUser'
+  methods: ['POST']
+
+user_delete:
+  path: /{id}
+  controller: 'App\Controller\UserController::delete'
+  methods: ['DELETE']
+
+user_update:
+  path: /update/{id}
+  controller: 'App\Controller\UserController::update'
+  methods: ['PUT']
+
