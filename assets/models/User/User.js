@@ -1,6 +1,5 @@
 export default class User {
     constructor(user) {
-        console.log("in class");
         this.id = user?.id ?? null;
         this.customerNumber = user?.customerNumber ?? null;
         this.anrede = user?.anrede ?? null;

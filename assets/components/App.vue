@@ -25,6 +25,7 @@
 import UserForm from './user/userForm.vue';
 import UserList from './user/userList.vue';
 import User from '../models/User/User.js';
+import toster from '../utils/toster.js';
 
 export default { 
   components: {
@@ -52,8 +53,6 @@ export default {
       this.mobileAdd = !this.mobileAdd
     },
     getUsers(){
-      console.log("Users will be list under this ");
-
       return fetch('user/list')
       .then(result => {
           if (result.headers.get('Content-Type') === 'application/json') {
@@ -63,8 +62,6 @@ export default {
           }
       })
       .then((result)=>{
-          console.log("Users will be list under this ");
-          console.log(result);
           result.forEach(user => {
             this.addUserToList(new User(user), false);
           });
@@ -76,12 +73,14 @@ export default {
       return fetch(`user/${id}`, { method: 'DELETE' })
       .then(result => {
         if (!result.ok) {
+          toster.createToast('Error', 'Somthing went wrong', 'error');
           throw new Error(`Failed to delete user with id ${id}`);
         }
         return result.json();
       })
       .then(() => {
         this.users = this.users.filter(user => user.id !== id);
+        toster.createToast('Success', 'User successfully deleted!');
         this.addNewUser();
       })
       .catch(error => {
@@ -96,6 +95,7 @@ export default {
     addUserToList(user, update = true) {
       this.users.push(user);
       if (update) {        
+        toster.createToast('Success', 'User created successfully!');
         this.addNewUser();
         this.showAndHideForm();
       }
@@ -104,6 +104,7 @@ export default {
       const index = this.users.findIndex(u => u.id === user.id);
       if (index !== -1) {
         this.users[index] = user;
+        toster.createToast('Success', 'User updated successfully!');
         this.addNewUser();
       }
     }
