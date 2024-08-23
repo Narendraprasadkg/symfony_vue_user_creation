@@ -16,11 +16,14 @@ import './bootstrap';
 
 import { createApp } from 'vue';
 import App from './components/App.vue';
-
+import router from './router';
+import store from './store/store';
 
 import { createBootstrap } from 'bootstrap-vue-next';
 const bootstrap = createBootstrap();
 
-const app = createApp(App);
-app.use(bootstrap);
-app.mount('#app');
+const app = createApp(App)
+    .use(store)
+    .use(router)
+    .use(bootstrap)
+    .mount('#app');

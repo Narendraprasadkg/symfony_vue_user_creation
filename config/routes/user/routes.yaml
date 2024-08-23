@@ -21,3 +21,8 @@ user_update:
   controller: 'App\Controller\UserController::update'
   methods: ['PUT']
 
+user_get:
+  path: /{id}
+  controller: 'App\Controller\UserController::fetchUser'
+  methods: ['GET']
+

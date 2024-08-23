@@ -73,18 +73,17 @@
 import { useVuelidate } from '@vuelidate/core'
 import { required, email } from '@vuelidate/validators'
 import User from '../../models/User/User.js';
+import toster from '../../utils/toster';
+import { mapState, mapActions } from 'vuex';
 
 export default {
     setup () {
         return { v$: useVuelidate() }
     },
-    props:{
-        user: User,
-        form: Object
-    },
     data(){
         return {
             dummyUser:null,
+            user:null
         }
     },
     validations(){
@@ -95,16 +94,22 @@ export default {
             }
         }
     },
+    computed:{
+        userId(){
+            return this.$routes.id;
+        }
+    },
     mounted(){
         this.setUser();
     },
     methods:{
+
         save(){
             this.v$.$touch();
             console.log("invalid",this.v$.$invalid)
             if (!this.v$.$invalid) {
-                const props = this.user.id ? {
-                    url:`user/update/${this.user.id}`,
+                const props = this.userId ? {
+                    url:`user/update/${this.userId}`,
                     method : 'PUT',
                     emit : 'userUpdated',
                     msg:"User updated successfully",
@@ -143,9 +148,22 @@ export default {
             this.setUser();
         },
         deleteUser(){
-            if(this.user.id){
-                this.$emit('deleteUser', this.user.id);
-            }
+            return fetch(`user/${id}`, { method: 'DELETE' })
+            .then(result => {
+                if (!result.ok) {
+                    toster.createToast('Error', 'Somthing went wrong', 'error');
+                    throw new Error(`Failed to delete user with id ${id}`);
+                }
+                return result.json();
+            })
+            .then(() => {
+                this.users = this.users.filter(user => user.id !== id);
+                toster.createToast('Success', 'User successfully deleted!');
+                this.addNewUser();
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
         },
         setUser(){
             this.dummyUser = JSON.parse(JSON.stringify(this.user));
@@ -155,6 +173,30 @@ export default {
         },
         goBack(){
             this.$emit('goBack');
+        },
+        getUser(){
+            return fetch(`user/${this.userId}`, {
+                method: "GET",
+                headers: {
+                'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(this.dummyUser),
+            })
+            .then(result => {
+                // if (!result.ok) { throw new Error(`Failed to save user: ${result.statusText}`); }
+                const contentType = result.headers.get('Content-Type');
+                return contentType && contentType.includes('application/json') ? result.json() : result.text();
+            })
+            .then(result => {
+                if(typeof result === 'string'){
+                    document.getElementById('app').innerHTML = result;
+                }else{
+                    this.$emit(props.emit, new User(result.user));
+                }
+            })
+            .catch(error => {
+                console.error("There was an error!", error);
+            });
         }
     },
     watch:{

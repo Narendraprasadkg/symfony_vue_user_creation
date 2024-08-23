@@ -59,11 +59,9 @@
 
 <script>
 import User from '../../models/User/User';
+import { mapState, mapActions } from 'vuex';
 
 export default {
-    props: {
-        users: Array
-    },
     data() {
         return {
             orders:['fa-sort','fa-sort-desc','fa-sort-asc'],
@@ -75,10 +73,14 @@ export default {
         }
     },
     mounted(){
+        this.getUsers();
     },
     methods:{
+        ...mapActions({
+            store___users:'setUsers', 
+        }),
         addUser(){
-            this.$emit('addUser', new User());
+            this.$router.push(`/`);
         },
         orderChange(prop){
             this[prop] = (this[prop] + 1) % 3;
@@ -88,6 +90,19 @@ export default {
         },
         prev(){
             this.currentPage = this.currentPage <= 1 ? 1 : this.currentPage - 1;
+        },
+        getUsers(){
+            return fetch('user/list')
+            .then(result => {
+                if (result.headers.get('Content-Type') === 'application/json') {
+                    return result.json();
+                } else {
+                    return result.text();
+                }
+            })
+            .then((result)=>{
+                this.store___users({ users: result.map(m => new User(m)) });
+            })
         }
     },
     computed:{
@@ -118,7 +133,8 @@ export default {
         },
         pages(){
             return Math.ceil(this.users.length/this.numberOfUserPerList);
-        }
+        },
+        ...mapState(['users']),
     }
 }
 </script>

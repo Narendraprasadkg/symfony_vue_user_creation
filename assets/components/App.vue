@@ -2,20 +2,17 @@
   <div>
     <div class="row">
       <div class="col-md-6 p-4" :class="{'d-none d-md-block': !mobileAdd}">
-        <UserForm v-if="user"
+        <!-- <UserForm v-if="user"
           :user = user
           @userAdded="addUserToList"
           @deleteUser="deleteUserFromList"
           @userUpdated="updateUser"
           @goBack="showAndHideForm">
-        </UserForm>
+        </UserForm> -->
+        <router-view></router-view>
       </div>
       <div class="col-md-6 p-4" :class="{'d-none d-md-block': mobileAdd}">
-        <UserList 
-          :users="users" 
-          @userSelected="selectUser"
-          @addUser="showAndHideForm">
-        </UserList>
+        <UserList/>
       </div>
     </div>
   </div>
@@ -46,48 +43,11 @@ export default {
     this.getUsers()
   },
   methods: {
-    addNewUser(){
-      this.user = new User();
-    },
     showAndHideForm(){
       this.mobileAdd = !this.mobileAdd
     },
-    getUsers(){
-      return fetch('user/list')
-      .then(result => {
-          if (result.headers.get('Content-Type') === 'application/json') {
-              return result.json();
-          } else {
-              return result.text();
-          }
-      })
-      .then((result)=>{
-          result.forEach(user => {
-            this.addUserToList(new User(user), false);
-          });
-      })
-    },
-
-    deleteUserFromList(id){
-      console.log(id);
-      return fetch(`user/${id}`, { method: 'DELETE' })
-      .then(result => {
-        if (!result.ok) {
-          toster.createToast('Error', 'Somthing went wrong', 'error');
-          throw new Error(`Failed to delete user with id ${id}`);
-        }
-        return result.json();
-      })
-      .then(() => {
-        this.users = this.users.filter(user => user.id !== id);
-        toster.createToast('Success', 'User successfully deleted!');
-        this.addNewUser();
-      })
-      .catch(error => {
-        console.error('Error:', error);
-      });
-    },
     selectUser(user) {
+      this.$router.push(`/user/${user.id}`);
       this.user = user;
       this.showAndHideForm();
     },

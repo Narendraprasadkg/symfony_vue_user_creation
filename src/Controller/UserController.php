@@ -195,4 +195,30 @@ class UserController extends AbstractController
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
+
+    #[Route('/user/{id}', name:'user_get', methods: ['GET'])]
+    public function fetchUser(UserTransformer $userTransformer, EntityManagerInterface $entityManager, int $id): JsonResponse
+    {
+        try {
+            $user = $entityManager->getRepository(User::class)->find($id);
+            if (!$user) {
+                // Throw an exception if the user is not found
+                throw $this->createNotFoundException(
+                    'No user found for id ' . $id
+                );
+            }
+
+            // Return a JSON response indicating success
+            return $this->json([
+                'message' => 'User successfully deleted',
+                'user' => $userTransformer->transform($user)
+            ], Response::HTTP_OK);
+
+        } catch (\Exception $e) {
+            // Return a JSON response indicating an error occurred
+            return $this->json([
+                'message' => 'An error occurred: ' . $e->getMessage()
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+    }
 }
