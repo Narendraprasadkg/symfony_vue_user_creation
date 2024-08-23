@@ -16,6 +16,9 @@ export default createStore({
     },
     addNewUser(state,user) {
       state.users.push(user);
+    },
+    deleteUser(state,user) {
+      state.users = state.users.filter(u => u.id !== user.id);
     }
   },
   actions: {
@@ -27,6 +30,9 @@ export default createStore({
     },
     addNewUser({ commit },payload) {
       commit('addNewUser',payload.user);
+    },
+    deleteUser({ commit },payload) {
+      commit('deleteUser',payload.user);
     }
   },
   getters: {

@@ -28,7 +28,7 @@
                 </tr>
             </thead>
             <tbody>
-                <tr class="cursor-pointer" v-for="user in proccesedUsers" @click="$emit('userSelected', user)">
+                <tr class="cursor-pointer" v-for="user in proccesedUsers" @click="userSelected(user)">
                     <th scope="row">{{ user.customerNumber }}</th>
                     <td>{{ user.firstName }}</td>
                     <td>{{ user.secondName }}</td>
@@ -81,6 +81,9 @@ export default {
         }),
         addUser(){
             this.$router.push(`/`);
+        },
+        userSelected(user){
+            this.$router.push(`/view/${user.id}`);   
         },
         orderChange(prop){
             this[prop] = (this[prop] + 1) % 3;

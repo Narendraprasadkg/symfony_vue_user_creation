@@ -9,7 +9,7 @@ const routes = [
         component: UserForm,
     },
     {
-        path: "/user/:id",
+        path: "/view/:id",
         name: "UserForm",
         component: UserForm,
     }
