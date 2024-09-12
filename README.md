@@ -14,8 +14,7 @@ This project is a simple user management application built using Symfony for the
 Below is the folder structure to be created under the root directory:
 
 ```
-Directory
-Copy code
+Root Directory
 ├── php
 │   └── Dockerfile
 ├── docker-compose.yml
@@ -168,5 +167,3 @@ This setup is based on the guide from [Webeface](https://webeface.de/how-to-set-
 
 ## Project Description
 This project allows for the creation, updating, deletion, and viewing of users. It is built using Symfony for the backend and Vue.js for the frontend.
-
-Feel free to customize this README file to better fit your project's specifics!
